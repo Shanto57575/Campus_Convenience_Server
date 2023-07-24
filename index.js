@@ -16,7 +16,6 @@ console.log(process.env.DB_USER);
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.k0jy1tl.mongodb.net/?retryWrites=true&w=majority`;
 
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
     serverApi: {
         version: ServerApiVersion.v1,
@@ -28,11 +27,18 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
 
-        await client.connect();
+        // await client.connect();
         const collegeCollection = client.db("CollegeDB").collection("College");
+        const reviewsCollection = client.db("CollegeDB").collection("review");
 
         app.get('/mycollege', async (req, res) => {
             const cursor = collegeCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+
+        app.get('/reviews', async (req, res) => {
+            const cursor = reviewsCollection.find();
             const result = await cursor.toArray();
             res.send(result);
         })
@@ -43,12 +49,16 @@ async function run() {
             res.send(result);
         })
 
+        app.post('/reviews', async (req, res) => {
+            const review = req.body;
+            const result = await reviewsCollection.insertOne(review)
+            res.send(result);
+        })
+
 
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
-        // Ensures that the client will close when you finish/error
-        // await client.close();
     }
 }
 run().catch(console.dir);
