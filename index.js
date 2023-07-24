@@ -26,9 +26,16 @@ async function run() {
         // await client.connect();
         const collegeCollection = client.db("CollegeDB").collection("College");
         const reviewsCollection = client.db("CollegeDB").collection("review");
+        const DataCollection = client.db("CollegeDB").collection("AllData");
 
         app.get('/mycollege', async (req, res) => {
             const cursor = collegeCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+
+        app.get('/AllData', async (req, res) => {
+            const cursor = DataCollection.find();
             const result = await cursor.toArray();
             res.send(result);
         })
