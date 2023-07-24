@@ -10,10 +10,6 @@ const port = process.env.PORT || 5000;
 app.use(cors())
 app.use(express.json());
 
-//user : shanto575
-//password: HEEZzFjjU3Wu0ogD
-console.log(process.env.DB_USER);
-
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.k0jy1tl.mongodb.net/?retryWrites=true&w=majority`;
 
 const client = new MongoClient(uri, {
